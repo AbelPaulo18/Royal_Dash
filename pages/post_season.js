@@ -4,8 +4,20 @@ import PostMainMedia from "../components/PostMainMedia";
 import { useRouter } from "next/router";
 import { AxiosInstance } from "../utils/BaseUrl";
 import PostMedia from "../components/PostMedia";
+import { parseCookies } from "nookies";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
+  const { ["royalDashboard-Admin-Token"]: Token } = parseCookies(ctx);
+
+  if (!Token) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
   /* await axios.get(`${baseUrl}api/admin/genres/all`).then((e) => {
 		//genres = e.data.mode;
 		console.log("============");

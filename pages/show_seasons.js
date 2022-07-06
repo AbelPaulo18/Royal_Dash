@@ -1,11 +1,24 @@
 import React from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import { parseCookies } from "nookies";
+
 import { MainBody } from "../components/Mainbody";
 import { AxiosInstance } from "../utils/BaseUrl";
 import MediaCardContainer from "../components/MediaCardContainer";
-import Link from "next/link";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
+  const { ["royalDashboard-Admin-Token"]: Token } = parseCookies(ctx);
+
+  if (!Token) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
   const req = await AxiosInstance.get(
     `series/management/pag-seasons?page=1&limit=2`
   )

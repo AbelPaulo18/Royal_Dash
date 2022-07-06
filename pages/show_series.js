@@ -3,8 +3,20 @@ import { useRouter } from "next/router";
 import { MainBody } from "../components/Mainbody";
 import { AxiosInstance } from "../utils/BaseUrl";
 import MediaCardContainer from "../components/MediaCardContainer";
+import { parseCookies } from "nookies";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
+  const { ["royalDashboard-Admin-Token"]: Token } = parseCookies(ctx);
+
+  if (!Token) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
   const req = await AxiosInstance.get(`series/management/all?page=1&limit=4`)
     .then((e) => {
       return e.data.results;

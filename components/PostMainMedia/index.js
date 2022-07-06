@@ -1,17 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { AxiosInstance } from "../../utils/BaseUrl";
 
-function PostMainMedia({ query, mediaType, embeds, gen }) {
+function PostMainMedia({ query, mediaType, embeds, gen, admins }) {
+  const { handleSubmit, control, register, setValue, getValues } = useForm();
+
   var apiKey = "k_2fou8kzi";
+
   const [imDbId, setImDbId] = React.useState(
-    query ? query.imDbId : getValues("imdbId")
+    query.id ? query.imDbId : getValues("imdbId")
   );
+  const [alerta, setAlerta] = useState(false);
 
   const type = mediaType == "movie" ? "Filme" : "Séries";
   const movie = mediaType == "movie" ? true : false;
-
-  const { handleSubmit, control, register, setValue, getValues } = useForm();
 
   const reqEndpoints = [
     `https://api.themoviedb.org/3/find/${imDbId}?api_key=5a7e859a062b26ef282595be083f07fb&language=pt-BR&external_source=imdb_id`,
@@ -52,20 +55,32 @@ function PostMainMedia({ query, mediaType, embeds, gen }) {
     getValues("playerLink1") !== null && getValues("playerLink2") == null
       ? setValue("playerLink", [getValues("playerLink1")])
       : null;
+
+    if (query?.id) {
+      setValue("trailerId", query.trailerId);
+      setValue("imdbId", query.Imdbid);
+      setValue("title", query.title);
+      setValue("poster", query.poster);
+      setValue("back_drop", query.back_drop);
+      setValue("ratings", query.ratings);
+      setValue("votes", query.votes);
+      setValue("plot", query.plot);
+      setValue("season", query.seasons ? query.seasons : 0);
+      setValue("year", query.year);
+      setValue("genres", query.genres);
+      movie ? setValue("playerLink", query.playerId) : null;
+    }
   }, []);
 
-  const onSubmit = (data) => {
-    console.log(data);
-
+  const onSubmit = async (data) => {
     const PostData = movie
       ? {
           title: data.title,
           Imdbid: data.imdbId,
-          type: data.type,
           poster: data.poster,
-          back_drop: data.back_D,
+          back_drop: data.back_drop,
           plot: data.plot,
-          ratings: data.rating,
+          ratings: data.ratings,
           votes: data.votes,
           year: data.year,
           autor: data.admin,
@@ -84,7 +99,7 @@ function PostMainMedia({ query, mediaType, embeds, gen }) {
           Imdbid: imDbId,
           type: data.type,
           poster: data.poster,
-          back_drop: data.back_D,
+          back_drop: data.back_drop,
           plot: data.plot,
           ratings: data.ratings,
           votes: data.votes,
@@ -97,12 +112,44 @@ function PostMainMedia({ query, mediaType, embeds, gen }) {
           status: parseInt(data.state),
           published: 1,
         };
+
+    query?.id
+      ? await AxiosInstance.put(
+          movie
+            ? `film/management/update/${imDbId}`
+            : `series/management/update/series/${imDbId}`,
+          PostData
+        )
+          .then(() => {
+            console.log("Update");
+            setAlerta(true);
+            setTimeout(() => {
+              setAlerta(false);
+            }, 6000);
+          })
+          .catch((e) => {
+            console.log(e.message);
+          })
+      : await AxiosInstance.post(
+          movie ? `film/management/register` : `series/management/register`,
+          PostData
+        )
+          .then(() => {
+            console.log("Post");
+            setAlerta(true);
+            setTimeout(() => {
+              setAlerta(false);
+            }, 6000);
+          })
+          .catch((e) => {
+            console.log("Error");
+            console.log(e.message);
+            console.log(PostData);
+          });
   };
 
   const handleGenerateData = async (e) => {
     e.preventDefault();
-
-    console.log(getValues("imdbId"));
 
     const req = await axios
       .all(reqEndpoints.map((endpoint) => axios.get(endpoint)))
@@ -133,15 +180,45 @@ function PostMainMedia({ query, mediaType, embeds, gen }) {
           setValue("year", allData[1].data.year);
           setValue("genresList", allData[1].data.genresList);
           setValue("genres", allData[1].data.genres);
-
-          console.log(allData);
         })
       );
+
+    console.log("Query==>");
+    console.log(query.trailerId);
   };
 
   return (
     <div className="w-full h-screen overflow-y-auto flex flex-col items-center  bg-white">
-      <h1 className="text-3xl font-light mt-4 mb-6">Criar novo {type} </h1>
+      {alerta ? (
+        <div
+          className="absolute top-0 z-10 shadow-md right-[40%] flex p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+          role="alert"
+        >
+          <svg
+            className="inline flex-shrink-0 mr-3 w-5 h-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fillRule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+              clipRule="evenodd"
+            ></path>
+          </svg>
+          <div>
+            <span className="font-semibold mr-1">Alerta de Sucesso!</span>
+            Modifica as Informações e volte a submeter{" "}
+            {movie ? "um Filme" : "uma série"}
+          </div>
+        </div>
+      ) : (
+        <div />
+      )}
+      <h1 className="text-3xl font-light mt-4 mb-6">
+        {" "}
+        {`${query?.id ? "Editar " + type : "Gerar novo " + type}`}{" "}
+      </h1>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -351,8 +428,11 @@ function PostMainMedia({ query, mediaType, embeds, gen }) {
                   name="admin"
                   className="border rounded-md outline-none text-center mr-2 h-10 w-[20%] shadow-sm text-slate-900 "
                 >
-                  <option value="APL">APL</option>
-                  <option value="KPL">KPL</option>
+                  {admins?.map((item, index) => (
+                    <option key={index} value={item.name}>
+                      {item.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -380,8 +460,8 @@ function PostMainMedia({ query, mediaType, embeds, gen }) {
                     >
                       <option value={null}>--------</option>
                       {embeds?.map((item) => (
-                        <option key={item.id} value={`${item.playlink}`}>
-                          {`${item.name}`}
+                        <option key={item.id} value={item.playlink}>
+                          {item.name}
                         </option>
                       ))}
                     </select>
@@ -450,13 +530,18 @@ function PostMainMedia({ query, mediaType, embeds, gen }) {
             </div>
             <div className="w-full flex items-center justify-between px-4">
               <button
-                type="submit"
+                onClick={() => {
+                  handleSubmit(onSubmit);
+                }}
                 className="text-sm whitespace-nowrap py-2 px-4 w-auto text-slate-900 border border-slate-900 bg-slate-100 rounded-md "
               >
                 Salvar Pendente
               </button>
+
               <button
-                type="submit"
+                onClick={() => {
+                  handleSubmit(onSubmit);
+                }}
                 className="text-sm whitespace-nowrap py-2 px-4 w-auto text-white border border-slate-900 bg-slate-900 rounded-md"
               >
                 Publicar

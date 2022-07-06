@@ -23,10 +23,9 @@ function PostMedia() {
       .all(reqEndpoints.map((endpoint) => axios.get(endpoint)))
       .then(
         axios.spread((...allData) => {
-          setValue("imdbId", allData[1].data.id);
-          setValue("back_drop", allData[0].data.tv_results?.poster_path);
-          setValue("date", allData[0].data.tv_results?.first_air_date);
-          setValue("title", allData[0].data.tv_results?.name);
+          setValue("poster", allData[0]?.data.tv_results[0]?.backdrop_path);
+          setValue("date", allData[0]?.data.tv_results[0]?.first_air_date);
+          setValue("title", allData[0]?.data.tv_results[0]?.name);
 
           console.log(allData);
         })
@@ -46,7 +45,7 @@ function PostMedia() {
     console.log(data);
     const PostData = {
       name: data.title,
-      seriesImdbid: data.imDbId,
+      seriesImdbid: getValues("imDbId"),
       poster: data.poster,
       season: parseInt(data.seasons),
       autor: query.autor,
@@ -55,7 +54,7 @@ function PostMedia() {
       status: data.status,
     };
 
-    /* await AxiosInstance.post(`series/management/setSeason`, PostData)
+    await AxiosInstance.post(`series/management/setSeason`, PostData)
       .then((response) => {
         setAlerta(true);
         setTimeout(() => {
@@ -63,9 +62,9 @@ function PostMedia() {
         }, 4000);
       })
       .catch((e) => {
-        console.log(e);
+        console.log(e.message);
         console.log(PostData);
-      }); */
+      });
 
     /* 	 async () => {
 					await axios
@@ -82,8 +81,6 @@ function PostMedia() {
   };
   return (
     <div className="w-full h-screen overflow-y-auto flex flex-col items-center  bg-white">
-      <h1 className="text-3xl font-light mt-4 mb-6">Criar nova Temporada</h1>
-
       <form
         onSubmit={handleSubmit(onSubmit)}
         className=" flex items-center  overflow-y-auto w-[100%] h-screen"
@@ -116,7 +113,9 @@ function PostMedia() {
           )}
 
           <section className="flex flex-col items-center bg-stone-50 w-[75%] h-full overflow-y-auto ">
-            <h1>Add Nova Temporada</h1>
+            <h1 className="text-3xl font-light mt-4 mb-9">
+              Criar nova Temporada
+            </h1>
 
             <div className="flex border-b w-[80%] h-24 ">
               <div className="flex items-center justify-center  w-[30%] h-full bg ">

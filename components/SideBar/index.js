@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Link from "next/link";
 
 import { BsArrowLeftShort } from "react-icons/bs";
@@ -6,11 +6,15 @@ import { MdSpaceDashboard } from "react-icons/md";
 import { BiChevronDown } from "react-icons/bi";
 
 import { SideBarMenuItems } from "../../utils/constants";
+import { AuthContext } from "../../context/Auth";
 
 export const SideBar = () => {
   const [openSideBar, setOpenSideBar] = React.useState(true);
   const [movieSubmenuOpen, setMovieSubmenuOpen] = React.useState(false);
   const [seriesSubmenuOpen, setSeriesSubmenuOpen] = React.useState(false);
+
+  const { user } = useContext(AuthContext);
+
   return (
     <div
       className={`h-screen bg-slate-900 scrollbar-hide p-5 pt-8 ${
@@ -48,7 +52,14 @@ export const SideBar = () => {
             !openSideBar && "hidden"
           } duration-300 `}
         >
-          AdminName
+          {user.name}
+        </h1>
+        <h1
+          className={`text-center mt-1 italic font-extralight text-white text-sm ${
+            !openSideBar && "hidden"
+          } duration-300 `}
+        >
+          {user.email}
         </h1>
       </div>
 

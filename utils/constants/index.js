@@ -73,7 +73,7 @@ export const SideBarMenuItems = [
   },
   {
     name: "Admin",
-    route: "/",
+    route: "/admin_management",
     icon: RiAdminFill,
   },
   {

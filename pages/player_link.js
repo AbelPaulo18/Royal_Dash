@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { MainBody } from "./../components/Mainbody/index";
 import { AxiosInstance } from "../utils/BaseUrl";
+import { parseCookies } from "nookies";
 
 function PlayerLinks() {
   //
@@ -301,3 +302,20 @@ function PlayerLinks() {
 }
 
 export default PlayerLinks;
+
+export async function getServerSideProps(ctx) {
+  const { ["royalDashboard-Admin-Token"]: Token } = parseCookies(ctx);
+
+  if (!Token) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}

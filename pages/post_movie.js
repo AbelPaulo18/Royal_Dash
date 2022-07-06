@@ -3,13 +3,33 @@ import { MainBody } from "../components/Mainbody";
 import PostMainMedia from "../components/PostMainMedia";
 import { useRouter } from "next/router";
 import { AxiosInstance } from "../utils/BaseUrl";
+import { parseCookies } from "nookies";
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
+  const { ["royalDashboard-Admin-Token"]: Token } = parseCookies(ctx);
+
+  if (!Token) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
   /* await axios.get(`${baseUrl}api/admin/genres/all`).then((e) => {
 		//genres = e.data.mode;
 		console.log("============");
 		console.log(e.data);
 	}); */
+
+  const admins = await AxiosInstance.get("admin/management/allAdmin")
+    .then((res) => {
+      return res.data;
+    })
+    .then((res) => {
+      return res;
+    });
 
   const embeds = await AxiosInstance.get(`api/admin/embed-links`)
     .then((e) => e.data)
@@ -24,22 +44,23 @@ export async function getServerSideProps() {
     });
   return {
     props: {
-      Embeds: embeds,
-      Genres: genre,
+      Embeds: embeds || null,
+      Genres: genre || null,
+      Admins: admins || null,
     },
   };
 }
 
-function Post_movie({ embeds, Genres }) {
-  console.log(embeds);
+function Post_movie({ Embeds, Genres, Admins }) {
   const { query } = useRouter();
   return (
     <MainBody>
       <PostMainMedia
         query={query}
         mediaType="movie"
-        embeds={embeds}
-        gen={Genres}
+        embeds={Embeds?.links.rows}
+        gen={Genres?.rows}
+        admins={Admins?.rows}
       />
     </MainBody>
   );
