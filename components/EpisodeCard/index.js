@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import defaultImage from "../../assets/Images/default-placeholder.png";
 
 export default function EpisodeCard({
@@ -7,6 +8,7 @@ export default function EpisodeCard({
   series,
   name,
   publicado,
+  item,
 }) {
   let W = 100;
   let H = 108;
@@ -42,12 +44,20 @@ export default function EpisodeCard({
       </div>
 
       <div className=" sm:h-[70%] self-center h-auto w-full sm:w-auto flex flex-col items-center justify-between sm:mr-6 ">
-        <button
-          type="button"
-          className="text-slate-600 hover:text-white border border-slate-900 hover:bg-slate-900 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-slate-500 dark:text-slate-500 dark:hover:text-white dark:hover:bg-slate-600 dark:focus:ring-slate-900"
+        <Link
+          href={{
+            pathname: "/post_episodes",
+            query: item,
+          }}
+          passHref
         >
-          Editar
-        </button>
+          <a
+            type="button"
+            className="text-slate-600 hover:text-white border border-slate-900 hover:bg-slate-900 focus:ring-4 focus:outline-none focus:ring-slate-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-slate-500 dark:text-slate-500 dark:hover:text-white dark:hover:bg-slate-600 dark:focus:ring-slate-900"
+          >
+            Editar
+          </a>
+        </Link>
       </div>
 
       <div className=" sm:h-[70%] self-center h-auto w-full sm:w-auto flex flex-col items-center justify-between sm:mr-6 ">

@@ -1,4 +1,5 @@
 import React, { useContext } from "react";
+import { parseCookies } from "nookies";
 import Link from "next/link";
 
 import { BsArrowLeftShort } from "react-icons/bs";
@@ -6,14 +7,21 @@ import { MdSpaceDashboard } from "react-icons/md";
 import { BiChevronDown } from "react-icons/bi";
 
 import { SideBarMenuItems } from "../../utils/constants";
-import { AuthContext } from "../../context/Auth";
 
 export const SideBar = () => {
+  const { ["royalDashboard-Admin-Data"]: Token } = parseCookies(); //Getting Admin Data from Local Cookies
+
+  let token = Token
+    ? JSON.parse(Token)
+    : {
+        name: "#",
+        email: "#",
+      };
+
+  const [user, setUser] = React.useState();
   const [openSideBar, setOpenSideBar] = React.useState(true);
   const [movieSubmenuOpen, setMovieSubmenuOpen] = React.useState(false);
   const [seriesSubmenuOpen, setSeriesSubmenuOpen] = React.useState(false);
-
-  const { user } = useContext(AuthContext);
 
   return (
     <div
@@ -52,14 +60,14 @@ export const SideBar = () => {
             !openSideBar && "hidden"
           } duration-300 `}
         >
-          {user.name}
+          {user?.name}
         </h1>
         <h1
           className={`text-center mt-1 italic font-extralight text-white text-sm ${
             !openSideBar && "hidden"
           } duration-300 `}
         >
-          {user.email}
+          {user?.email}
         </h1>
       </div>
 

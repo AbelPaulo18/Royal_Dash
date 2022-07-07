@@ -48,7 +48,7 @@ function PostMedia() {
       seriesImdbid: getValues("imDbId"),
       poster: data.poster,
       season: parseInt(data.seasons),
-      autor: query.autor,
+      autor: "A",
       date: data.date,
       published: 1,
       status: data.status,
@@ -233,12 +233,18 @@ function PostMedia() {
               </div>
               <div className="w-full flex items-center justify-between px-4">
                 <button
+                  onClick={() => {
+                    handleSubmit(onSubmit);
+                  }}
                   type="submit"
                   className="py-2 px-4 w-auto text-slate-900 border border-slate-900 bg-slate-100 rounded-md "
                 >
                   Salvar Como Pendente
                 </button>
                 <button
+                  onClick={() => {
+                    handleSubmit(onSubmit);
+                  }}
                   type="submit"
                   className="py-2 px-4 w-auto text-white border border-slate-900 bg-slate-900 rounded-md"
                 >
