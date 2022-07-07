@@ -109,7 +109,7 @@ export const SideBar = () => {
             {item.sub && status && openSideBar && (
               <ul>
                 {item.submenu?.map((subItem, index) => (
-                  <Link passHref href={subItem.route}>
+                  <Link key={index} passHref href={subItem.route}>
                     <span
                       key={index}
                       className="flex items-center justify-start pl-6 mb-2 cursor-pointer group"
