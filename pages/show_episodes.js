@@ -115,10 +115,10 @@ function Show_episodes({ response }) {
 
         {!searchListener
           ? response.rows?.map((item) => {
-              return <EpisodeCard key={item.id} item={item} {...item} />;
+              return <EpisodeCard key={item.id} item={item} />;
             })
           : data?.map((item) => {
-              return <EpisodeCard key={item.id} item={item} {...item} />;
+              return <EpisodeCard key={item.id} item={item} />;
             })}
       </section>
     </MainBody>

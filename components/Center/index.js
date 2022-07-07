@@ -1,4 +1,4 @@
-/* import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AxiosInstance } from "../../utils/BaseUrl";
 
 export default function Center({
@@ -12,7 +12,7 @@ export default function Center({
   const [updated, setUpdated] = useState(null);
   const [state, setState] = useState(alertMode?.state === 0 ? false : true);
 
-  useEffect(async () => {
+  useEffect(() => {
     async function getUp() {
       const getUpdated = await AxiosInstance.get(`api/admin/alert-mode`).then(
         (e) => {
@@ -97,4 +97,3 @@ export default function Center({
     </div>
   );
 }
- */

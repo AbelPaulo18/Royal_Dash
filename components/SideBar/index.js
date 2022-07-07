@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { parseCookies } from "nookies";
+import { destroyCookie, parseCookies } from "nookies";
 import Link from "next/link";
 
 import { BsArrowLeftShort } from "react-icons/bs";
@@ -7,9 +7,12 @@ import { MdSpaceDashboard } from "react-icons/md";
 import { BiChevronDown } from "react-icons/bi";
 
 import { SideBarMenuItems } from "../../utils/constants";
+import { useRouter } from "next/router";
 
 export const SideBar = () => {
   const { ["royalDashboard-Admin-Data"]: Token } = parseCookies(); //Getting Admin Data from Local Cookies
+
+  const { replace } = useRouter();
 
   let token = Token
     ? JSON.parse(Token)
@@ -22,6 +25,13 @@ export const SideBar = () => {
   const [openSideBar, setOpenSideBar] = React.useState(true);
   const [movieSubmenuOpen, setMovieSubmenuOpen] = React.useState(false);
   const [seriesSubmenuOpen, setSeriesSubmenuOpen] = React.useState(false);
+
+  const logOut = () => {
+    console.log("DElete Cookies");
+    destroyCookie(null, "royalDashboard-Admin-Data");
+    destroyCookie(null, "royalDashboard-Admin-Token");
+    replace({ pathname: "/login" });
+  };
 
   return (
     <div
@@ -77,8 +87,9 @@ export const SideBar = () => {
 
         return (
           <span key={index}>
-            <Link passHref href={item.route}>
-              <li
+            {item.name === "logOut" ? (
+              <button
+                onClick={logOut}
                 className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-[#fff1] rounded-md ${
                   item.sub ? "mt-6" : "mt-2"
                 }`}
@@ -104,8 +115,38 @@ export const SideBar = () => {
                     }}
                   />
                 )}
-              </li>
-            </Link>
+              </button>
+            ) : (
+              <Link passHref href={item.route}>
+                <li
+                  className={`text-gray-300 text-sm flex items-center gap-x-4 cursor-pointer p-2 hover:bg-[#fff1] rounded-md ${
+                    item.sub ? "mt-6" : "mt-2"
+                  }`}
+                >
+                  <span className="text-2xl float-left">
+                    {item.icon ? <item.icon /> : <MdSpaceDashboard />}
+                  </span>
+
+                  <span
+                    className={`text-base font-medium flex-1 duration-200 ${
+                      !openSideBar && "hidden"
+                    }`}
+                  >
+                    {item.name}
+                  </span>
+                  {item.submenu && openSideBar && (
+                    <BiChevronDown
+                      className={`${status && "rotate-180"}`}
+                      onClick={() => {
+                        item.type === "movie"
+                          ? setMovieSubmenuOpen(!movieSubmenuOpen)
+                          : setSeriesSubmenuOpen(!seriesSubmenuOpen);
+                      }}
+                    />
+                  )}
+                </li>
+              </Link>
+            )}
             {item.sub && status && openSideBar && (
               <ul>
                 {item.submenu?.map((subItem, index) => (
