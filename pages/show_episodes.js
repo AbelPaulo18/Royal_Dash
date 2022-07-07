@@ -4,8 +4,8 @@ import { AxiosInstance } from "../utils/BaseUrl";
 import { MainBody } from "./../components/Mainbody/index";
 import { parseCookies } from "nookies";
 import { useForm } from "react-hook-form";
-import EndPoints from "./../../Royal/src/API/EndPoints";
 import AlertToast from "../components/AlertToast";
+import { Api_endPoints } from "../utils/endpoints";
 
 export async function getServerSideProps(ctx) {
   const { ["royalDashboard-Admin-Token"]: Token } = parseCookies(ctx);
@@ -54,20 +54,20 @@ function Show_episodes({ response }) {
         setAlert(false);
       }, 3000);
     } else {
-      await AxiosInstance.get(`${EndPoints.seriesRel}${imdbId}&${season}`).then(
-        (res) => {
-          if (res.data.message) {
-            setMsg(res.data.message);
-            setAlert(true);
-            setTimeout(() => {
-              setAlert(false);
-            }, 4000);
-          }
-
-          if (res.data.seasonsEpisodes)
-            setData(res?.data.seasonsEpisodes.Episodes);
+      await AxiosInstance.get(
+        `${Api_endPoints.seriesRel}${imdbId}&${season}`
+      ).then((res) => {
+        if (res.data.message) {
+          setMsg(res.data.message);
+          setAlert(true);
+          setTimeout(() => {
+            setAlert(false);
+          }, 4000);
         }
-      );
+
+        if (res.data.seasonsEpisodes)
+          setData(res?.data.seasonsEpisodes.Episodes);
+      });
     }
   }
 
