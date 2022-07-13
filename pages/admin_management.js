@@ -42,14 +42,21 @@ const Admin_management = ({ result }) => {
       email: data.email,
       password: data.password,
     };
-
-    await AxiosInstance.post(`admin/management/register`, postData).then(
-      (res) => console.log(res)
-    );
+    try {
+      await AxiosInstance.post(`admin/management/register`, postData).then(
+        (res) => console.log(res)
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   async function deleteAdmin({ id }) {
     await AxiosInstance.delete(``);
+  }
+
+  async function editAdmin({ id }) {
+    console.log("Edit ");
   }
 
   return (

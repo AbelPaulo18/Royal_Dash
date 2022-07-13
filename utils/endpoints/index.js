@@ -1,5 +1,6 @@
 export const Api_endPoints = {
   admin_login: "admin/management/login",
+  getAdminById: "/admin/management/admin/",
   all: "/film/management/all_raw",
   genre: "/film/management/genre/users/",
   byYear: "/film/management/query-year/",

@@ -8,23 +8,36 @@ import { BiChevronDown } from "react-icons/bi";
 
 import { SideBarMenuItems } from "../../utils/constants";
 import { useRouter } from "next/router";
+import { AxiosInstance } from "../../utils/BaseUrl";
+import { Api_endPoints } from "./../../utils/endpoints/index";
+import { AuthContext } from "../../context/Auth";
 
 export const SideBar = () => {
   const { ["royalDashboard-Admin-Data"]: Token } = parseCookies(); //Getting Admin Data from Local Cookies
 
   const { replace } = useRouter();
 
-  let token = Token
-    ? JSON.parse(Token)
-    : {
-        name: "#",
-        email: "#",
-      };
-
-  const [user, setUser] = React.useState();
+  const [user, setUser] = React.useState({});
   const [openSideBar, setOpenSideBar] = React.useState(true);
   const [movieSubmenuOpen, setMovieSubmenuOpen] = React.useState(false);
   const [seriesSubmenuOpen, setSeriesSubmenuOpen] = React.useState(false);
+
+  const {} = useContext(AuthContext);
+
+  async function load_admin_data() {
+    try {
+      await AxiosInstance.get(`${Api_endPoints.getAdminById}${Token}`).then(
+        (res) => {
+          setUser(res.data);
+          setAdmin(res.data);
+        }
+      );
+    } catch (error) {
+      console.warn(error.message);
+    }
+  }
+
+  load_admin_data();
 
   const logOut = () => {
     console.log("DElete Cookies");

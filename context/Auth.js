@@ -6,7 +6,7 @@ import { AxiosInstance } from "../utils/BaseUrl";
 export const AuthContext = createContext({});
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(false);
+  const [Admin, setAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   //const { "royalDashboard-Admin-Token": Token } = parseCookies();
@@ -19,14 +19,9 @@ export function AuthProvider({ children }) {
 
     await AxiosInstance.post("admin/management/login", postContent).then(
       (res) => {
-        setCookie(
-          undefined,
-          "royalDashboard-Admin-Data",
-          JSON.stringify(res.data.user),
-          {
-            maxAge: 60 * 60 * 24, //24h...
-          }
-        );
+        setCookie(undefined, "royalDashboard-Admin-Data", res.data.user._id, {
+          maxAge: 60 * 60 * 24, //24h...
+        });
         setCookie(undefined, "royalDashboard-Admin-Token", res.data.Token, {
           maxAge: 60 * 60 * 24, //24h...
         });
@@ -37,7 +32,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, setIsAuthenticated, signIn, user }}
+      value={{ isAuthenticated, setIsAuthenticated, signIn, Admin, setAdmin }}
     >
       {children}
     </AuthContext.Provider>
