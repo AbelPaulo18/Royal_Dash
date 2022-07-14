@@ -22,7 +22,7 @@ export const SideBar = () => {
   const [movieSubmenuOpen, setMovieSubmenuOpen] = React.useState(false);
   const [seriesSubmenuOpen, setSeriesSubmenuOpen] = React.useState(false);
 
-  const {} = useContext(AuthContext);
+  const { setAdmin } = useContext(AuthContext);
 
   async function load_admin_data() {
     try {
@@ -37,7 +37,9 @@ export const SideBar = () => {
     }
   }
 
-  load_admin_data();
+  React.useEffect(() => {
+    load_admin_data();
+  }, []);
 
   const logOut = () => {
     console.log("DElete Cookies");

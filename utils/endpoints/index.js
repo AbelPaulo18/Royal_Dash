@@ -11,4 +11,5 @@ export const Api_endPoints = {
   allSeries: "/series/management/all?page=1&limit=20",
   seriesRel: "/series/management/rel/",
   seriesSeasonsRel: "/series/management/seasons-rel/",
+  generateSeasonEpisodes: "series/management/generate/seasons-episodes/",
 };

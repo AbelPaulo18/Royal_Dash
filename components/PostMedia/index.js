@@ -1,8 +1,10 @@
 import React from "react";
 import axios from "axios";
-import { AxiosInstance } from "../../utils/BaseUrl";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
+
+import { AxiosInstance } from "../../utils/BaseUrl";
+import { Api_endPoints } from "../../utils/endpoints";
 
 function PostMedia() {
   const { query } = useRouter();
@@ -10,6 +12,7 @@ function PostMedia() {
 
   const [imDbId, setImDbId] = React.useState(null);
   const [alerta, setAlerta] = React.useState(false);
+  const [generateEpisodes, setGenerateEpisodes] = React.useState(false);
   var apiKey = "k_op30951d";
 
   const reqEndpoints = [
@@ -41,11 +44,10 @@ function PostMedia() {
     }
   }, [, query]);
 
-  const onSubmit = async (data) => {
-    console.log(data);
-    const PostData = {
+  const onSubmitData = async (data) => {
+    /* const PostData = {
       name: data.title,
-      seriesImdbid: getValues("imDbId"),
+      seriesImdbid: data.imdbId,
       poster: data.poster,
       season: parseInt(data.seasons),
       autor: "A",
@@ -53,36 +55,43 @@ function PostMedia() {
       published: 1,
       status: data.status,
     };
+     */
+    const PostData = {
+      name: getValues("title"),
+      seriesId: imDbId,
+      poster: getValues("poster"),
+      season: parseInt(getValues("seasons")),
+      autor: "A",
+      date: getValues("date"),
+      published: 1,
+      status: parseInt(getValues("status")),
+    };
 
-    await AxiosInstance.post(`series/management/setSeason`, PostData)
-      .then((response) => {
-        setAlerta(true);
-        setTimeout(() => {
-          setAlerta(false);
-        }, 4000);
-      })
-      .catch((e) => {
-        console.log(e.message);
-        console.log(PostData);
-      });
-
-    /* 	 async () => {
-					await axios
-						.post(`${baseUrl}/series/management/setSeason`, PostData)
-						.then((response) => {
-							console.log("Postado as new ");
-							console.log(PostData);
-						})
-						.catch((e) => {
-							console.log(e);
-							console.log(PostData);
-						});
-			  }; */
+    try {
+      await AxiosInstance.post(`series/management/setSeason`, PostData)
+        .then(async (response) => {
+          if (!generateEpisodes)
+            await AxiosInstance.post(
+              `${Api_endPoints.generateSeasonEpisodes}${PostData.seriesId}&${PostData.season}`
+            ).then((res) => console.log(res));
+        })
+        .then((response) => {
+          setAlerta(true);
+          setTimeout(() => {
+            setAlerta(false);
+          }, 4000);
+        })
+        .catch((e) => {
+          console.log(e.message);
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
   };
   return (
     <div className="w-full h-screen overflow-y-auto flex flex-col items-center  bg-white">
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onSubmitData)}
         className=" flex items-center  overflow-y-auto w-[100%] h-screen"
       >
         <div className=" flex items-center w-[100%] h-screen pb-10 ">
@@ -145,12 +154,10 @@ function PostMedia() {
                 <div className="flex flex-col w-[60%] h-full justify-center items-center ">
                   <div className="flex  w-[100%] h-full justify-center items-center ">
                     <input
-                      {...register("imdbId", { required: true })}
                       type="text"
                       name="Imdbid"
                       onChange={(e) => {
                         setImDbId(e.target.value);
-                        console.log(imDbId);
                       }}
                       className="border rounded-l outline-none text-center h-10 w-[70%] shadow-sm "
                     />
@@ -234,19 +241,18 @@ function PostMedia() {
               <div className="w-full flex items-center justify-between px-4">
                 <button
                   onClick={() => {
-                    handleSubmit(onSubmit);
+                    onSubmitData;
                   }}
-                  type="submit"
                   className="py-2 px-4 w-auto text-slate-900 border border-slate-900 bg-slate-100 rounded-md "
                 >
                   Salvar Como Pendente
                 </button>
                 <button
                   onClick={() => {
-                    handleSubmit(onSubmit);
+                    handleSubmit(onSubmitData);
                   }}
                   type="submit"
-                  className="py-2 px-4 w-auto text-white border border-slate-900 bg-slate-900 rounded-md"
+                  className="py-2 px-4 w-auto text-white border z-20 border-slate-900 bg-slate-900 rounded-md"
                 >
                   Publicar
                 </button>

@@ -18,12 +18,6 @@ export async function getServerSideProps(ctx) {
     };
   }
 
-  /* await axios.get(`${baseUrl}api/admin/genres/all`).then((e) => {
-		//genres = e.data.mode;
-		console.log("============");
-		console.log(e.data);
-	}); */
-
   const embeds = await AxiosInstance.get(`api/admin/embed-links`)
     .then((e) => e.data)
     .then((e) => {
@@ -44,7 +38,6 @@ export async function getServerSideProps(ctx) {
 }
 
 function Post_season({ embeds, Genres }) {
-  console.log(embeds);
   const { query } = useRouter();
   return (
     <MainBody>
