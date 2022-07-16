@@ -22,16 +22,26 @@ function PostEpisode({ query, embeds, admins }) {
 
   const onSubmit = async (data) => {
     console.log(data);
-    const PostData = {
-      name: data.title,
-      seriesImdbid: getValues("imDbId"),
-      poster: data.poster,
-      season: parseInt(data.seasons),
-      autor: "A",
-      date: data.date,
-      published: 1,
-      status: data.status,
-    };
+    const PostData = query.season
+      ? {
+          name: data.title,
+          poster: data.poster,
+          season: parseInt(data.seasons),
+          autor: "A",
+          date: data.date,
+          published: 1,
+          status: data.status,
+        }
+      : {
+          name: data.title,
+          seriesImdbid: getValues("imdbId"),
+          poster: data.poster,
+          season: parseInt(data.seasons),
+          autor: "A",
+          date: data.date,
+          published: 1,
+          status: data.status,
+        };
 
     /* await AxiosInstance.post(`series/management/setSeason`, PostData)
       .then((response) => {

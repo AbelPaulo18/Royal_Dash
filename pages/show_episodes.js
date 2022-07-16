@@ -37,10 +37,20 @@ export async function getServerSideProps(ctx) {
 function Show_episodes({ response }) {
   const [data, setData] = React.useState([]); // Searched data response handler
   const [searchListener, setSearchListener] = React.useState(false); // onSearch listener
+  const [refresher, setRefresher] = React.useState(false); // onSearch listener
   const [alert, setAlert] = React.useState(false); // onSearch listener
   const [msg, setMsg] = React.useState(""); // onSearch listener
 
   const { handleSubmit, register, getValues } = useForm();
+
+  React.useEffect(() => {
+    console.log(refresher);
+    response;
+  }, [refresher]);
+
+  function refres() {
+    setRefresher(!refresher);
+  }
 
   async function SearchMedia() {
     setSearchListener(true);
@@ -115,10 +125,10 @@ function Show_episodes({ response }) {
 
         {!searchListener
           ? response.rows?.map((item) => {
-              return <EpisodeCard key={item.id} item={item} />;
+              return <EpisodeCard key={item.id} item={item} refresh={refres} />;
             })
           : data?.map((item) => {
-              return <EpisodeCard key={item.id} item={item} />;
+              return <EpisodeCard key={item.id} item={item} refresh={refres} />;
             })}
       </section>
     </MainBody>

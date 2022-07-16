@@ -11,5 +11,11 @@ export const Api_endPoints = {
   allSeries: "/series/management/all?page=1&limit=20",
   seriesRel: "/series/management/rel/",
   seriesSeasonsRel: "/series/management/seasons-rel/",
+  postEpisode: "/series/management/setEpisodes",
+  updateSeries: "/series/management/update/series/",
+  updateEpisode: "/series/management/update/episodes/:id&:season&:episode",
   generateSeasonEpisodes: "series/management/generate/seasons-episodes/",
+  deleteAllSeasonEpisodes: "series/management/delete/season_episodes/",
+  deleteSeason: "series/management/delete/season/",
+  deleteEpisode: "series/management/delete/episodes/",
 };

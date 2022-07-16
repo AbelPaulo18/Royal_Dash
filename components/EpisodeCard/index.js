@@ -1,10 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
 import defaultImage from "../../assets/Images/default-placeholder.png";
+import { AxiosInstance } from "./../../utils/BaseUrl";
+import { Api_endPoints } from "./../../utils/endpoints/index";
 
-export default function EpisodeCard({ item }) {
+export default function EpisodeCard({ item, refresh }) {
   let W = 100;
   let H = 108;
+
+  async function deleteEpisode() {
+    await AxiosInstance.delete(`${Api_endPoints.deleteEpisode}${item.id}`).then(
+      (res) => console.log(res)
+    );
+    refresh();
+  }
 
   return (
     <div className="flex sm:flex-row flex-col sm:items-start items-center sm:justify-start justify-center relative sm:h-28  w-full border rounded-md shadow sm:pl-2 pl-0 sm:space-y-0 space-y-4 ">
@@ -55,6 +64,9 @@ export default function EpisodeCard({ item }) {
 
       <div className=" sm:h-[70%] self-center h-auto w-full sm:w-auto flex flex-col items-center justify-between sm:mr-6 ">
         <button
+          onClick={() => {
+            deleteEpisode();
+          }}
           type="button"
           className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
         >

@@ -1,13 +1,13 @@
 import React, { useContext } from "react";
 import { destroyCookie, parseCookies } from "nookies";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { BsArrowLeftShort } from "react-icons/bs";
 import { MdSpaceDashboard } from "react-icons/md";
 import { BiChevronDown } from "react-icons/bi";
 
 import { SideBarMenuItems } from "../../utils/constants";
-import { useRouter } from "next/router";
 import { AxiosInstance } from "../../utils/BaseUrl";
 import { Api_endPoints } from "./../../utils/endpoints/index";
 import { AuthContext } from "../../context/Auth";
@@ -42,7 +42,6 @@ export const SideBar = () => {
   }, []);
 
   const logOut = () => {
-    console.log("DElete Cookies");
     destroyCookie(null, "royalDashboard-Admin-Data");
     destroyCookie(null, "royalDashboard-Admin-Token");
     replace({ pathname: "/login" });
@@ -109,7 +108,7 @@ export const SideBar = () => {
                   item.sub ? "mt-6" : "mt-2"
                 }`}
               >
-                <span className="text-2xl float-left">
+                <span className="text-3xl float-left">
                   {item.icon ? <item.icon /> : <MdSpaceDashboard />}
                 </span>
 

@@ -44,8 +44,8 @@ const Show_seasons = ({ result }) => {
             Adicionar Temporada
           </div>
         </Link>
-        <h1>Media</h1>
-        <MediaCardContainer result={result} series={true} season={true} />
+        <h1>@Apl</h1>
+        <MediaCardContainer result={result} series={false} season={true} />
       </MainBody>
     </div>
   );
